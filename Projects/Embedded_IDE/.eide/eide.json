@@ -1206,6 +1206,7 @@
       "custom_dep": {
         "name": "default",
         "incList": [
+          ".",
           "../../Drivers",
           "../../Middlewares",
           "../../USER/Inc",
