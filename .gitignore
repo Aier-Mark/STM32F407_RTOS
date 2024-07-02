@@ -1,0 +1,10 @@
+# dot files
+
+# project out
+/Projects/Embedded_IDE/build
+/Projects/MDK-ARM/Objects
+/Projects/MDK-ARM/Listings
+
+# eide template
+*.ept
+*.eide-template
