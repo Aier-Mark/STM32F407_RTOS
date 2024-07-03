@@ -23,10 +23,10 @@
 #endif
 
 /*====================
-   COLOR SETTINGS
+        颜色设置
  *====================*/
 
-/*Color depth: 8 (A8), 16 (RGB565), 24 (RGB888), 32 (XRGB8888)*/
+/*颜色深度: 8 (A8), 16 (RGB565), 24 (RGB888), 32 (XRGB8888)*/
 #define LV_COLOR_DEPTH 16
 
 /*=========================
@@ -34,27 +34,26 @@
  *=========================*/
 
 /* Possible values
- * - LV_STDLIB_BUILTIN:     LVGL's built in implementation
- * - LV_STDLIB_CLIB:        Standard C functions, like malloc, strlen, etc
+ * - LV_STDLIB_BUILTIN:     LVGL的内置实现
+ * - LV_STDLIB_CLIB:        标准C函数，如: malloc, strlen, etc
  * - LV_STDLIB_MICROPYTHON: MicroPython implementation
  * - LV_STDLIB_RTTHREAD:    RT-Thread implementation
- * - LV_STDLIB_CUSTOM:      Implement the functions externally
+ * - LV_STDLIB_CUSTOM:      从外部实现这些功能
  */
 #define LV_USE_STDLIB_MALLOC    LV_STDLIB_BUILTIN
 #define LV_USE_STDLIB_STRING    LV_STDLIB_BUILTIN
 #define LV_USE_STDLIB_SPRINTF   LV_STDLIB_BUILTIN
 
-
 #if LV_USE_STDLIB_MALLOC == LV_STDLIB_BUILTIN
-    /*Size of the memory available for `lv_malloc()` in bytes (>= 2kB)*/
-    #define LV_MEM_SIZE (20 * 1024U)          /*[bytes]*/
+    /* `lv_mem_alloc()`可获得的内存大小 (以字节为单位)(>= 2kB) */
+    #define LV_MEM_SIZE (20 * 1024U)          /*[字节]*/
 
-    /*Size of the memory expand for `lv_malloc()` in bytes*/
+    /* ' lv_malloc() '的内存扩展大小 (以字节为单位) */
     #define LV_MEM_POOL_EXPAND_SIZE 0
 
-    /*Set an address for the memory pool instead of allocating it as a normal array. Can be in external SRAM too.*/
-    #define LV_MEM_ADR 0     /*0: unused*/
-    /*Instead of an address give a memory allocator that will be called to get a memory pool for LVGL. E.g. my_malloc*/
+    /* 为内存池设置一个地址，而不是将其作为普通数组分配。也可以在外部SRAM中。 */
+    #define LV_MEM_ADR 0     /*0: 未使用*/
+    /* 给内存分配器而不是地址，它将被调用来获得LVGL的内存池。例如： my_malloc */
     #if LV_MEM_ADR == 0
         #undef LV_MEM_POOL_INCLUDE
         #undef LV_MEM_POOL_ALLOC
@@ -62,14 +61,14 @@
 #endif  /*LV_USE_STDLIB_MALLOC == LV_STDLIB_BUILTIN*/
 
 /*====================
-   HAL SETTINGS
+       HAL 设置
  *====================*/
 
 /*Default display refresh, input device read and animation step period.*/
 #define LV_DEF_REFR_PERIOD  33      /*[ms]*/
 
-/*Default Dot Per Inch. Used to initialize default sizes such as widgets sized, style paddings.
- *(Not so important, you can adjust it to modify default sizes and spaces)*/
+/*默认每英寸的点数量。用于初始化默认大小，例如小部件大小，样式填充。
+ *(不是很重要，你可以调整它来修改默认大小和空格) */
 #define LV_DPI_DEF 130     /*[px/inch]*/
 
 /*=================
@@ -90,7 +89,7 @@
 #endif
 
 /*========================
- * RENDERING CONFIGURATION
+ *        显示配置
  *========================*/
 
 /*Align the stride of all layers and images to this bytes*/
@@ -200,11 +199,11 @@
 #endif
 
 /*=======================
- * FEATURE CONFIGURATION
+ *      功能配置
  *=======================*/
 
 /*-------------
- * Logging
+ *     日志
  *-----------*/
 
 /*Enable the log module*/
@@ -212,16 +211,16 @@
 #if LV_USE_LOG
 
     /*How important log should be added:
-    *LV_LOG_LEVEL_TRACE       A lot of logs to give detailed information
-    *LV_LOG_LEVEL_INFO        Log important events
-    *LV_LOG_LEVEL_WARN        Log if something unwanted happened but didn't cause a problem
-    *LV_LOG_LEVEL_ERROR       Only critical issue, when the system may fail
-    *LV_LOG_LEVEL_USER        Only logs added by the user
-    *LV_LOG_LEVEL_NONE        Do not log anything*/
+    *LV_LOG_LEVEL_TRACE       大量的日志给出了详细的信息
+    *LV_LOG_LEVEL_INFO        记录重要事件
+    *LV_LOG_LEVEL_WARN        如果发生了一些不想要的事情但没有引起问题，则记录下来
+    *LV_LOG_LEVEL_ERROR       只有在系统可能出现故障时才会出现关键问题
+    *LV_LOG_LEVEL_USER        仅用户自己添加的日志
+    *LV_LOG_LEVEL_NONE        不要记录任何内容 */
     #define LV_LOG_LEVEL LV_LOG_LEVEL_WARN
 
-    /*1: Print the log with 'printf';
-    *0: User need to register a callback with `lv_log_register_print_cb()`*/
+    /*1: 使用'printf'打印日志;
+     *0: 用户需要用' lv_log_register_print_cb() '注册回调函数 */
     #define LV_LOG_PRINTF 0
 
     /*1: Enable print timestamp;
@@ -232,7 +231,7 @@
      *0: Do not print file and line number of the log*/
     #define LV_LOG_USE_FILE_LINE 1
 
-    /*Enable/disable LV_LOG_TRACE in modules that produces a huge number of logs*/
+    /* 在产生大量日志的模块中启用/禁用LV_LOG_TRACE */
     #define LV_LOG_TRACE_MEM        1
     #define LV_LOG_TRACE_TIMER      1
     #define LV_LOG_TRACE_INDEV      1
@@ -246,23 +245,23 @@
 #endif  /*LV_USE_LOG*/
 
 /*-------------
- * Asserts
+ *    断言
  *-----------*/
 
-/*Enable asserts if an operation is failed or an invalid data is found.
- *If LV_USE_LOG is enabled an error message will be printed on failure*/
-#define LV_USE_ASSERT_NULL          1   /*Check if the parameter is NULL. (Very fast, recommended)*/
-#define LV_USE_ASSERT_MALLOC        1   /*Checks is the memory is successfully allocated or no. (Very fast, recommended)*/
-#define LV_USE_ASSERT_STYLE         0   /*Check if the styles are properly initialized. (Very fast, recommended)*/
-#define LV_USE_ASSERT_MEM_INTEGRITY 0   /*Check the integrity of `lv_mem` after critical operations. (Slow)*/
-#define LV_USE_ASSERT_OBJ           0   /*Check the object's type and existence (e.g. not deleted). (Slow)*/
+/* 如果操作失败或发现无效数据，则启用断言。
+ * 如果启用了LV_USE_LOG，失败时会打印错误信息*/
+#define LV_USE_ASSERT_NULL                  1   /* 检查参数是否为NULL。(非常快,推荐) */
+#define LV_USE_ASSERT_MALLOC                1   /* 检查内存是否分配成功。(非常快,推荐) */
+#define LV_USE_ASSERT_STYLE                 0   /* 检查样式是否正确初始化。(非常快,推荐) */
+#define LV_USE_ASSERT_MEM_INTEGRITY         0   /* 关键操作完成后，请检查“lv_mem”的完整性。(慢)*/
+#define LV_USE_ASSERT_OBJ                   0   /* 检查对象的类型和存在(例如，未删除)。(慢) */
 
-/*Add a custom handler when assert happens e.g. to restart the MCU*/
-#define LV_ASSERT_HANDLER_INCLUDE <stdint.h>
-#define LV_ASSERT_HANDLER while(1);   /*Halt by default*/
+/* 当assert发生时，添加一个自定义处理程序，例如重新启动MCU */
+#define LV_ASSERT_HANDLER_INCLUDE           <stdint.h>
+#define LV_ASSERT_HANDLER while(1);         /* 停止在默认情况下 */
 
 /*-------------
- * Debug
+ *    调试
  *-----------*/
 
 /*1: Draw random colored rectangles over the redrawn areas*/
@@ -277,7 +276,7 @@
 #define LV_USE_PARALLEL_DRAW_DEBUG 0
 
 /*-------------
- * Others
+ *    其他
  *-----------*/
 
 #define LV_ENABLE_GLOBAL_CUSTOM 0
@@ -340,40 +339,40 @@
 #endif
 
 /*=====================
- *  COMPILER SETTINGS
+ *      编译器设置
  *====================*/
 
-/*For big endian systems set to 1*/
+/* 对于设置为1的大端序系统 */
 #define LV_BIG_ENDIAN_SYSTEM 0
 
-/*Define a custom attribute to `lv_tick_inc` function*/
+/* 为' lv_tick_inc '函数定义一个自定义属性 */
 #define LV_ATTRIBUTE_TICK_INC
 
-/*Define a custom attribute to `lv_timer_handler` function*/
+/* 为' lv_timer_handler '函数定义一个自定义属性 */
 #define LV_ATTRIBUTE_TIMER_HANDLER
 
-/*Define a custom attribute to `lv_display_flush_ready` function*/
+/* 为' lv_disp_flush_ready '函数定义一个自定义属性 */
 #define LV_ATTRIBUTE_FLUSH_READY
 
-/*Required alignment size for buffers*/
+/* 缓冲区所需的对齐大小 */
 #define LV_ATTRIBUTE_MEM_ALIGN_SIZE 1
 
-/*Will be added where memories needs to be aligned (with -Os data might not be aligned to boundary by default).
+/* 将被添加到需要对齐内存的地方(默认情况下-Os数据可能不会对齐到边界)。
  * E.g. __attribute__((aligned(4)))*/
 #define LV_ATTRIBUTE_MEM_ALIGN
 
-/*Attribute to mark large constant arrays for example font's bitmaps*/
+/* 属性来标记大型常量数组，例如字体的位图 */
 #define LV_ATTRIBUTE_LARGE_CONST
 
-/*Compiler prefix for a big array declaration in RAM*/
+/* RAM中大数组声明的编译器前缀 */
 #define LV_ATTRIBUTE_LARGE_RAM_ARRAY
 
-/*Place performance critical functions into a faster memory (e.g RAM)*/
+/* 将性能关键功能放入更快的内存中(例如RAM) */
 #define LV_ATTRIBUTE_FAST_MEM
 
-/*Export integer constant to binding. This macro is used with constants in the form of LV_<CONST> that
- *should also appear on LVGL binding API such as Micropython.*/
-#define LV_EXPORT_CONST_INT(int_value) struct _silence_gcc_warning /*The default value just prevents GCC warning*/
+/* 导出整型常量到绑定。该宏与LV_<CONST> that形式的常量一起使用
+ * 也应该出现在LVGL绑定API，如Micropython。*/
+#define LV_EXPORT_CONST_INT(int_value) struct _silence_gcc_warning /* 默认值只是防止GCC警告 */
 
 /*Prefix all global extern data with this*/
 #define LV_ATTRIBUTE_EXTERN_DATA
@@ -382,7 +381,7 @@
 #define LV_USE_FLOAT            0
 
 /*==================
- *   FONT USAGE
+ *      字库设置
  *===================*/
 
 /*Montserrat fonts with ASCII range and some symbols using bpp = 4
@@ -409,79 +408,79 @@
 #define LV_FONT_MONTSERRAT_46 0
 #define LV_FONT_MONTSERRAT_48 0
 
-/*Demonstrate special features*/
+/* 展示特色 */
 #define LV_FONT_MONTSERRAT_28_COMPRESSED 0  /*bpp = 3*/
-#define LV_FONT_DEJAVU_16_PERSIAN_HEBREW 0  /*Hebrew, Arabic, Persian letters and all their forms*/
+#define LV_FONT_DEJAVU_16_PERSIAN_HEBREW 0  /* 希伯来语，阿拉伯语，波斯语以及它们的各种形式 */
 #define LV_FONT_SIMSUN_16_CJK            0  /*1000 most common CJK radicals*/
 
-/*Pixel perfect monospace fonts*/
+/* 像素完美的等宽字体 */
 #define LV_FONT_UNSCII_8  0
 #define LV_FONT_UNSCII_16 0
 
-/*Optionally declare custom fonts here.
- *You can use these fonts as default font too and they will be available globally.
+/* 可选声明自定义字体在这里。
+ * 你也可以使用这些字体作为默认字体，它们将是全球可用的。
  *E.g. #define LV_FONT_CUSTOM_DECLARE   LV_FONT_DECLARE(my_font_1) LV_FONT_DECLARE(my_font_2)*/
 #define LV_FONT_CUSTOM_DECLARE
 
-/*Always set a default font*/
+/* 始终设置默认字体 */
 #define LV_FONT_DEFAULT &lv_font_montserrat_14
 
-/*Enable handling large font and/or fonts with a lot of characters.
- *The limit depends on the font size, font face and bpp.
- *Compiler error will be triggered if a font needs it.*/
+/* 启用处理大字体和/或带有大量字符的字体。
+ * 限制取决于字体大小，字体面和bpp。
+ * 编译器错误将被触发，如果字体需要它 */
 #define LV_FONT_FMT_TXT_LARGE 0
 
-/*Enables/disables support for compressed fonts.*/
+/* 启用/禁用对压缩字体的支持。 */
 #define LV_USE_FONT_COMPRESSED 0
 
-/*Enable drawing placeholders when glyph dsc is not found*/
+/* 当找不到字形dsc时启用绘图占位符 */
 #define LV_USE_FONT_PLACEHOLDER 1
 
 /*=================
- *  TEXT SETTINGS
+ *     文本设置
  *=================*/
 
 /**
- * Select a character encoding for strings.
- * Your IDE or editor should have the same character encoding
+ * 为字符串选择字符编码
+ * IDE或编辑器应该具有相同的字符编码
  * - LV_TXT_ENC_UTF8
  * - LV_TXT_ENC_ASCII
  */
 #define LV_TXT_ENC LV_TXT_ENC_UTF8
 
-/*Can break (wrap) texts on these chars*/
+/* 可以在这些字符上中断(换行)文本 */
 #define LV_TXT_BREAK_CHARS " ,.;:-_)]}"
 
-/*If a word is at least this long, will break wherever "prettiest"
- *To disable, set to a value <= 0*/
+/* 如果一个单词至少有这么长，就会在“最美”的地方断裂
+ * 要禁用，设置一个值<= 0 */
 #define LV_TXT_LINE_BREAK_LONG_LEN 0
 
-/*Minimum number of characters in a long word to put on a line before a break.
- *Depends on LV_TXT_LINE_BREAK_LONG_LEN.*/
+/* 在一个长单词中，在停顿之前放置一行的最小字符数。
+ * 取决于LV_TXT_LINE_BREAK_LONG_LEN。 */
 #define LV_TXT_LINE_BREAK_LONG_PRE_MIN_LEN 3
 
-/*Minimum number of characters in a long word to put on a line after a break.
- *Depends on LV_TXT_LINE_BREAK_LONG_LEN.*/
+/* 在一个长单词中，在停顿后插入一行的最小字符数。
+ * 取决于LV_TXT_LINE_BREAK_LONG_LEN。*/
 #define LV_TXT_LINE_BREAK_LONG_POST_MIN_LEN 3
 
-/*Support bidirectional texts. Allows mixing Left-to-Right and Right-to-Left texts.
- *The direction will be processed according to the Unicode Bidirectional Algorithm:
+/* 支持双向文本。允许混合从左到右和从右到左的文本。
+ * 方向会根据Unicode双向算法进行处理:
  *https://www.w3.org/International/articles/inline-bidi-markup/uba-basics*/
 #define LV_USE_BIDI 0
 #if LV_USE_BIDI
-    /*Set the default direction. Supported values:
-    *`LV_BASE_DIR_LTR` Left-to-Right
-    *`LV_BASE_DIR_RTL` Right-to-Left
-    *`LV_BASE_DIR_AUTO` detect texts base direction*/
+    /* 设置默认方向。支持的值:
+    *`LV_BASE_DIR_LTR` 从左到右
+    *`LV_BASE_DIR_RTL` 从右到左
+    *`LV_BASE_DIR_AUTO` 检测文本基本方向 */
     #define LV_BIDI_BASE_DIR_DEF LV_BASE_DIR_AUTO
 #endif
 
-/*Enable Arabic/Persian processing
- *In these languages characters should be replaced with an other form based on their position in the text*/
+/* 支持阿拉伯语/波斯处理
+ * 在这些语言中，字符应该根据其在文本中的位置被替换为其他形式 */
 #define LV_USE_ARABIC_PERSIAN_CHARS 0
 
 /*==================
- * WIDGETS
+ *    控件设置
  *================*/
 
 /*Documentation of the widgets: https://docs.lvgl.io/latest/en/html/widgets/index.html*/
@@ -518,9 +517,9 @@
 
 #define LV_USE_CHECKBOX   1
 
-#define LV_USE_DROPDOWN   1   /*Requires: lv_label*/
+#define LV_USE_DROPDOWN   1   /* 依赖: lv_label*/
 
-#define LV_USE_IMAGE      1   /*Requires: lv_label*/
+#define LV_USE_IMAGE      1   /* 依赖: lv_label*/
 
 #define LV_USE_IMAGEBUTTON     1
 
@@ -528,8 +527,8 @@
 
 #define LV_USE_LABEL      1
 #if LV_USE_LABEL
-    #define LV_LABEL_TEXT_SELECTION 1 /*Enable selecting text of the label*/
-    #define LV_LABEL_LONG_TXT_HINT 1  /*Store some extra info in labels to speed up drawing of very long texts*/
+    #define LV_LABEL_TEXT_SELECTION 1 /* 启用标签的选择文本*/
+    #define LV_LABEL_LONG_TXT_HINT 1  /* 在标签中存储一些额外的信息，以加快绘制非常长的文本 */
     #define LV_LABEL_WAIT_CHAR_COUNT 3  /*The count of wait chart*/
 #endif
 
@@ -543,15 +542,15 @@
 
 #define LV_USE_MSGBOX     1
 
-#define LV_USE_ROLLER     1   /*Requires: lv_label*/
+#define LV_USE_ROLLER     1   /* 依赖: lv_label*/
 
 #define LV_USE_SCALE      1
 
-#define LV_USE_SLIDER     1   /*Requires: lv_bar*/
+#define LV_USE_SLIDER     1   /* 依赖: lv_bar*/
 
 #define LV_USE_SPAN       1
 #if LV_USE_SPAN
-    /*A line text can contain maximum num of span descriptor */
+    /* 一个行文本可以包含最大数量的span描述符 */
     #define LV_SPAN_SNIPPET_STACK_SIZE 64
 #endif
 
@@ -561,7 +560,7 @@
 
 #define LV_USE_SWITCH     1
 
-#define LV_USE_TEXTAREA   1   /*Requires: lv_label*/
+#define LV_USE_TEXTAREA   1   /* 依赖: lv_label*/
 #if LV_USE_TEXTAREA != 0
     #define LV_TEXTAREA_DEF_PWD_SHOW_TIME 1500    /*ms*/
 #endif
@@ -575,86 +574,86 @@
 #define LV_USE_WIN        1
 
 /*==================
- * THEMES
+ *       主题
  *==================*/
 
-/*A simple, impressive and very complete theme*/
+/* 一个简单，令人印象深刻，非常完整的主题 */
 #define LV_USE_THEME_DEFAULT 1
 #if LV_USE_THEME_DEFAULT
 
-    /*0: Light mode; 1: Dark mode*/
+    /* 0:光模式;1:黑暗的模式 */
     #define LV_THEME_DEFAULT_DARK 0
 
-    /*1: Enable grow on press*/
+    /* 1:按下使能生长 */
     #define LV_THEME_DEFAULT_GROW 1
 
-    /*Default transition time in [ms]*/
+    /* 默认转换时间[ms] */
     #define LV_THEME_DEFAULT_TRANSITION_TIME 80
 #endif /*LV_USE_THEME_DEFAULT*/
 
-/*A very simple theme that is a good starting point for a custom theme*/
+/* 一个非常简单的主题，这是一个自定义主题的良好起点 */
 #define LV_USE_THEME_SIMPLE 1
 
-/*A theme designed for monochrome displays*/
+/* 专为单色显示器设计的主题 */
 #define LV_USE_THEME_MONO 1
 
 /*==================
- * LAYOUTS
+ *       布局
  *==================*/
 
-/*A layout similar to Flexbox in CSS.*/
+/* 类似于CSS中的Flexbox布局 */
 #define LV_USE_FLEX 1
 
-/*A layout similar to Grid in CSS.*/
+/* 类似于CSS中的网格布局 */
 #define LV_USE_GRID 1
 
 /*====================
- * 3RD PARTS LIBRARIES
+ *      第三方库
  *====================*/
 
-/*File system interfaces for common APIs */
+/* 通用api的文件系统接口 */
 
 /*API for fopen, fread, etc*/
 #define LV_USE_FS_STDIO 0
 #if LV_USE_FS_STDIO
-    #define LV_FS_STDIO_LETTER '\0'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
-    #define LV_FS_STDIO_PATH ""         /*Set the working directory. File/directory paths will be appended to it.*/
-    #define LV_FS_STDIO_CACHE_SIZE 0    /*>0 to cache this number of bytes in lv_fs_read()*/
+    #define LV_FS_STDIO_LETTER '\0'     /* 设置一个可访问驱动器的大写字母 (e.g. 'A') */
+    #define LV_FS_STDIO_PATH ""         /* 设置工作目录。文件/目录路径将被追加到它 */
+    #define LV_FS_STDIO_CACHE_SIZE 0    /*>0 在lv_fs_read()中缓存这个字节数 */
 #endif
 
 /*API for open, read, etc*/
 #define LV_USE_FS_POSIX 0
 #if LV_USE_FS_POSIX
-    #define LV_FS_POSIX_LETTER '\0'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
-    #define LV_FS_POSIX_PATH ""         /*Set the working directory. File/directory paths will be appended to it.*/
-    #define LV_FS_POSIX_CACHE_SIZE 0    /*>0 to cache this number of bytes in lv_fs_read()*/
+    #define LV_FS_POSIX_LETTER '\0'     /* 设置一个可访问驱动器的大写字母 (e.g. 'A') */
+    #define LV_FS_POSIX_PATH ""         /* 设置工作目录。文件/目录路径将被追加到它 */
+    #define LV_FS_POSIX_CACHE_SIZE 0    /*>0 在lv_fs_read()中缓存这个字节数 */
 #endif
 
 /*API for CreateFile, ReadFile, etc*/
 #define LV_USE_FS_WIN32 0
 #if LV_USE_FS_WIN32
-    #define LV_FS_WIN32_LETTER '\0'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
-    #define LV_FS_WIN32_PATH ""         /*Set the working directory. File/directory paths will be appended to it.*/
-    #define LV_FS_WIN32_CACHE_SIZE 0    /*>0 to cache this number of bytes in lv_fs_read()*/
+    #define LV_FS_WIN32_LETTER '\0'     /* 设置一个可访问驱动器的大写字母 (e.g. 'A') */
+    #define LV_FS_WIN32_PATH ""         /* 设置工作目录。文件/目录路径将被追加到它 */
+    #define LV_FS_WIN32_CACHE_SIZE 0    /*>0 在lv_fs_read()中缓存这个字节数 */
 #endif
 
 /*API for FATFS (needs to be added separately). Uses f_open, f_read, etc*/
 #define LV_USE_FS_FATFS 0
 #if LV_USE_FS_FATFS
-    #define LV_FS_FATFS_LETTER '\0'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
-    #define LV_FS_FATFS_CACHE_SIZE 0    /*>0 to cache this number of bytes in lv_fs_read()*/
+    #define LV_FS_FATFS_LETTER '\0'     /* 设置一个可访问驱动器的大写字母 (e.g. 'A')*/
+    #define LV_FS_FATFS_CACHE_SIZE 0    /*>0 在lv_fs_read()中缓存这个字节数 */
 #endif
 
 /*API for memory-mapped file access. */
 #define LV_USE_FS_MEMFS 0
 #if LV_USE_FS_MEMFS
-    #define LV_FS_MEMFS_LETTER '\0'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
+    #define LV_FS_MEMFS_LETTER '\0'     /* 设置一个可访问驱动器的大写字母 (e.g. 'A')*/
 #endif
 
 /*API for LittleFs. */
 #define LV_USE_FS_LITTLEFS 0
 #if LV_USE_FS_LITTLEFS
-    #define LV_FS_LITTLEFS_LETTER '\0'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
+    #define LV_FS_LITTLEFS_LETTER '\0'     /* 设置一个可访问驱动器的大写字母 (e.g. 'A')*/
 #endif
 
 /*LODEPNG decoder library*/
@@ -700,8 +699,8 @@
     /*Let FreeType to use LVGL memory and file porting*/
     #define LV_FREETYPE_USE_LVGL_PORT 0
 
-    /*Cache count of the glyphs in FreeType. It means the number of glyphs that can be cached.
-     *The higher the value, the more memory will be used.*/
+    /*FreeType中符号的缓存计数。它表示可以缓存的字形数量。
+     *该值越高，使用的内存就越多。*/
     #define LV_FREETYPE_CACHE_FT_GLYPH_CNT 256
 #endif
 
@@ -730,22 +729,22 @@
 /*Use external LZ4 library*/
 #define LV_USE_LZ4_EXTERNAL  0
 
-/*FFmpeg library for image decoding and playing videos
- *Supports all major image formats so do not enable other image decoder with it*/
+/*FFmpeg库的图像解码和播放视频
+ *支持所有主要的图像格式，所以不启用其他图像解码器给它*/
 #define LV_USE_FFMPEG 0
 #if LV_USE_FFMPEG
-    /*Dump input information to stderr*/
+    /* 将输入信息转储到stderr */
     #define LV_FFMPEG_DUMP_FORMAT 0
 #endif
 
 /*==================
- * OTHERS
+ *       其他
  *==================*/
 
-/*1: Enable API to take snapshot for object*/
+/* 1:启用API对对象进行快照 */
 #define LV_USE_SNAPSHOT 0
 
-/*1: Enable system monitor component*/
+/*1: 启用系统监控组件 */
 #define LV_USE_SYSMON   0
 #if LV_USE_SYSMON
     /*Get the idle percentage. E.g. uint32_t my_get_idle(void);*/
@@ -842,7 +841,7 @@
 #endif
 
 /*==================
- * DEVICES
+ *       设备
  *==================*/
 
 /*Use SDL to open window on PC and handle mouse and keyboard*/
@@ -932,32 +931,32 @@
 #define LV_USE_WINDOWS    0
 
 /*==================
-* EXAMPLES
+*       实例
 *==================*/
 
-/*Enable the examples to be built with the library*/
+/* 允许使用库构建示例 */
 #define LV_BUILD_EXAMPLES 1
 
 /*===================
- * DEMO USAGE
+ *     演示使用
  ====================*/
 
-/*Show some widget. It might be required to increase `LV_MEM_SIZE` */
+/* 显示了一些部件。可能需要增加“LV_MEM_SIZE” */
 #define LV_USE_DEMO_WIDGETS 0
 
-/*Demonstrate the usage of encoder and keyboard*/
+/* 演示编码器和键盘的用法 */
 #define LV_USE_DEMO_KEYPAD_AND_ENCODER 0
 
-/*Benchmark your system*/
+/* 基准系统 */
 #define LV_USE_DEMO_BENCHMARK 0
 
 /*Render test for each primitives. Requires at least 480x272 display*/
 #define LV_USE_DEMO_RENDER 0
 
-/*Stress test for LVGL*/
-#define LV_USE_DEMO_STRESS 0
+/* LVGL压力测试 */
+#define LV_USE_DEMO_STRESS 1
 
-/*Music player demo*/
+/* 音乐播放器的演示 */
 #define LV_USE_DEMO_MUSIC 0
 #if LV_USE_DEMO_MUSIC
     #define LV_DEMO_MUSIC_SQUARE    0

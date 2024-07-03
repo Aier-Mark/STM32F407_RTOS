@@ -10,6 +10,7 @@
 #include "lvgl.h"
 #include "lv_port_disp.h"
 #include "lv_port_indev.h"
+#include "lv_demo_stress.h"
 /* FreeRTOS配置 -----------------------------------------------------------------*/
 
 /* START_TASK 任务 配置
@@ -23,15 +24,15 @@ void start_task(void *pvParameters); /* 任务函数 */
 /* TASK1 任务 配置
  * 包括: 任务句柄 任务优先级 堆栈大小 创建任务
  */
-#define TASK1_PRIO     2        /* 任务优先级 */
-#define TASK1_STK_SIZE 128      /* 任务堆栈大小 */
+#define TASK1_PRIO     3        /* 任务优先级 */
+#define TASK1_STK_SIZE 1024      /* 任务堆栈大小 */
 TaskHandle_t Task1Task_Handler; /* 任务句柄 */
 void task1(void *pvParameters); /* 任务函数 */
 
 /* TASK2 任务 配置
  * 包括: 任务句柄 任务优先级 堆栈大小 创建任务
  */
-#define TASK2_PRIO     3        /* 任务优先级 */
+#define TASK2_PRIO     4        /* 任务优先级 */
 #define TASK2_STK_SIZE 128      /* 任务堆栈大小 */
 TaskHandle_t Task2Task_Handler; /* 任务句柄 */
 void task2(void *pvParameters); /* 任务函数 */
@@ -95,12 +96,20 @@ void start_task(void *pvParameters)
  */
 void task1(void *pvParameters)
 {
-    lcd_show_string(30, 50, 200, 16, 16, "STM32", RED);
-    lcd_show_string(30, 70, 200, 16, 16, "USMART TEST", RED);
-    lcd_show_string(30, 90, 200, 16, 16, "ATOM@ALIENTEK", RED);
-    while (1) {
-        printf("freertos\r\n");
-        vTaskDelay(1000); /* 延时1000ticks */
+    // lcd_show_string(30, 50, 200, 16, 16, "STM32", RED);
+    // lcd_show_string(30, 70, 200, 16, 16, "USMART TEST", RED);
+    // lcd_show_string(30, 90, 200, 16, 16, "ATOM@ALIENTEK", RED);
+    // while (1) {
+    //     printf("freertos\r\n");
+    //     vTaskDelay(1000); /* 延时1000ticks */
+    // }
+    
+    lv_demo_stress();       /* 测试的demo */
+    
+    while(1)
+    {
+        lv_timer_handler(); /* LVGL计时器 */
+        vTaskDelay(5);
     }
 }
 

@@ -10,6 +10,9 @@
  *      INCLUDES
  *********************/
 #include "lv_port_indev.h"
+#include "./BSP/TOUCH/touch.h"
+#include "./BSP/LCD/lcd.h"
+#include "./BSP/KEY/key.h"
 
 /*********************
  *      DEFINES
@@ -23,40 +26,51 @@
  *  STATIC PROTOTYPES
  **********************/
 
+/* 触摸屏 */
+
 static void touchpad_init(void);
-static void touchpad_read(lv_indev_t * indev, lv_indev_data_t * data);
+static void touchpad_read(lv_indev_t *indev, lv_indev_data_t *data);
 static bool touchpad_is_pressed(void);
-static void touchpad_get_xy(int32_t * x, int32_t * y);
+static void touchpad_get_xy(int32_t *x, int32_t *y);
 
-static void mouse_init(void);
-static void mouse_read(lv_indev_t * indev, lv_indev_data_t * data);
-static bool mouse_is_pressed(void);
-static void mouse_get_xy(int32_t * x, int32_t * y);
+/* 鼠标 */
 
-static void keypad_init(void);
-static void keypad_read(lv_indev_t * indev, lv_indev_data_t * data);
-static uint32_t keypad_get_key(void);
+// static void mouse_init(void);
+// static void mouse_read(lv_indev_t * indev, lv_indev_data_t * data);
+// static bool mouse_is_pressed(void);
+// static void mouse_get_xy(int32_t * x, int32_t * y);
 
-static void encoder_init(void);
-static void encoder_read(lv_indev_t * indev, lv_indev_data_t * data);
-static void encoder_handler(void);
+/* 键盘 */
 
-static void button_init(void);
-static void button_read(lv_indev_t * indev, lv_indev_data_t * data);
-static int8_t button_get_pressed_id(void);
-static bool button_is_pressed(uint8_t id);
+// static void keypad_init(void);
+// static void keypad_read(lv_indev_t * indev, lv_indev_data_t * data);
+// static uint32_t keypad_get_key(void);
+
+/* 编码器 */
+
+// static void encoder_init(void);
+// static void encoder_read(lv_indev_t * indev, lv_indev_data_t * data);
+// static void encoder_handler(void);
+
+/* 按钮 */
+
+// static void button_init(void);
+// static void button_read(lv_indev_t * indev, lv_indev_data_t * data);
+// static int8_t button_get_pressed_id(void);
+// static bool button_is_pressed(uint8_t id);
 
 /**********************
  *  STATIC VARIABLES
  **********************/
-lv_indev_t * indev_touchpad;
-lv_indev_t * indev_mouse;
-lv_indev_t * indev_keypad;
-lv_indev_t * indev_encoder;
-lv_indev_t * indev_button;
+lv_indev_t *indev_touchpad; // 触摸屏
+// lv_indev_t * indev_mouse;       // 鼠标
+// lv_indev_t * indev_keypad;      // 键盘
+// lv_indev_t * indev_encoder;     // 编码器
+// lv_indev_t * indev_button;      // 按钮
 
-static int32_t encoder_diff;
-static lv_indev_state_t encoder_state;
+/* 编码器相关 */
+// static int32_t encoder_diff;
+// static lv_indev_state_t encoder_state;
 
 /**********************
  *      MACROS
@@ -66,101 +80,107 @@ static lv_indev_state_t encoder_state;
  *   GLOBAL FUNCTIONS
  **********************/
 
+/**
+ * @brief       初始化并注册输入设备
+ * @param       无
+ * @retval      无
+ */
 void lv_port_indev_init(void)
 {
     /**
-     * Here you will find example implementation of input devices supported by LittelvGL:
-     *  - Touchpad
-     *  - Mouse (with cursor support)
-     *  - Keypad (supports GUI usage only with key)
-     *  - Encoder (supports GUI usage only with: left, right, push)
-     *  - Button (external buttons to press points on the screen)
      *
-     *  The `..._read()` function are only examples.
-     *  You should shape them according to your hardware
+     * 在这里你可以找到 LittlevGL 支持的出入设备的实现示例:
+     *  - 触摸屏
+     *  - 鼠标 (支持光标)
+     *  - 键盘 (仅支持按键的 GUI 用法)
+     *  - 编码器 (支持的 GUI 用法仅包括: 左, 右, 按下)
+     *  - 按钮 (按下屏幕上指定点的外部按钮)
+     *
+     *  函数 `..._read()` 只是示例
+     *  你需要根据具体的硬件来完成这些函数
      */
 
     /*------------------
-     * Touchpad
+     *      触摸屏
      * -----------------*/
 
-    /*Initialize your touchpad if you have*/
+    /* 初始化触摸屏(如果有) */
     touchpad_init();
 
-    /*Register a touchpad input device*/
+    /* 注册触摸屏输入设备 */
     indev_touchpad = lv_indev_create();
     lv_indev_set_type(indev_touchpad, LV_INDEV_TYPE_POINTER);
     lv_indev_set_read_cb(indev_touchpad, touchpad_read);
 
     /*------------------
-     * Mouse
+     *       鼠标
      * -----------------*/
 
-    /*Initialize your mouse if you have*/
-    mouse_init();
+    // /* 初始化鼠标(如果有) */
+    // mouse_init();
 
-    /*Register a mouse input device*/
-    indev_mouse = lv_indev_create();
-    lv_indev_set_type(indev_mouse, LV_INDEV_TYPE_POINTER);
-    lv_indev_set_read_cb(indev_mouse, mouse_read);
+    // /* 注册鼠标输入设备 */
+    // indev_mouse = lv_indev_create();
+    // lv_indev_set_type(indev_mouse, LV_INDEV_TYPE_POINTER);
+    // lv_indev_set_read_cb(indev_mouse, mouse_read);
 
-    /*Set cursor. For simplicity set a HOME symbol now.*/
-    lv_obj_t * mouse_cursor = lv_image_create(lv_screen_active());
-    lv_image_set_src(mouse_cursor, LV_SYMBOL_HOME);
-    lv_indev_set_cursor(indev_mouse, mouse_cursor);
+    // /* 设置光标，为了简单起见，现在设置为一个 HOME 符号 */
+    // lv_obj_t * mouse_cursor = lv_image_create(lv_screen_active());
+    // lv_image_set_src(mouse_cursor, LV_SYMBOL_HOME);
+    // lv_indev_set_cursor(indev_mouse, mouse_cursor);
 
     /*------------------
-     * Keypad
+     *       键盘
      * -----------------*/
 
-    /*Initialize your keypad or keyboard if you have*/
-    keypad_init();
+    // /* 初始化键盘(如果有) */
+    // keypad_init();
 
-    /*Register a keypad input device*/
-    indev_keypad = lv_indev_create();
-    lv_indev_set_type(indev_keypad, LV_INDEV_TYPE_KEYPAD);
-    lv_indev_set_read_cb(indev_keypad, keypad_read);
+    // /* 注册键盘输入设备 */
+    // indev_keypad = lv_indev_create();
+    // lv_indev_set_type(indev_keypad, LV_INDEV_TYPE_KEYPAD);
+    // lv_indev_set_read_cb(indev_keypad, keypad_read);
 
-    /*Later you should create group(s) with `lv_group_t * group = lv_group_create()`,
-     *add objects to the group with `lv_group_add_obj(group, obj)`
-     *and assign this input device to group to navigate in it:
-     *`lv_indev_set_group(indev_keypad, group);`*/
+    /* 接着你需要用 `lv_group_t * group = lv_group_create()` 来创建组
+     * 用 `lv_group_add_obj(group, obj)` 往组中添加物体
+     * 并将这个输入设备分配到组中，以导航到它:
+     * `lv_indev_set_group(indev_keypad, group);` */
 
     /*------------------
-     * Encoder
+     *      编码器
      * -----------------*/
 
-    /*Initialize your encoder if you have*/
-    encoder_init();
+    // /* 初始化编码器(如果有) */
+    // encoder_init();
 
-    /*Register a encoder input device*/
-    indev_encoder = lv_indev_create();
-    lv_indev_set_type(indev_encoder, LV_INDEV_TYPE_ENCODER);
-    lv_indev_set_read_cb(indev_touchpad, encoder_read);
+    // /* 注册编码器输入设备 */
+    // indev_encoder = lv_indev_create();
+    // lv_indev_set_type(indev_encoder, LV_INDEV_TYPE_ENCODER);
+    // lv_indev_set_read_cb(indev_touchpad, encoder_read);
 
-    /*Later you should create group(s) with `lv_group_t * group = lv_group_create()`,
-     *add objects to the group with `lv_group_add_obj(group, obj)`
-     *and assign this input device to group to navigate in it:
-     *`lv_indev_set_group(indev_encoder, group);`*/
+    /* 接着你需要用 `lv_group_t * group = lv_group_create()` 来创建组
+     * 用 `lv_group_add_obj(group, obj)` 往组中添加物体
+     * 并将这个输入设备分配到组中，以导航到它:
+     * `lv_indev_set_group(indev_keypad, group);` */
 
     /*------------------
-     * Button
+     *       按钮
      * -----------------*/
 
-    /*Initialize your button if you have*/
-    button_init();
+    // /* 初始化按钮(如果有) */
+    // button_init();
 
-    /*Register a button input device*/
-    indev_button = lv_indev_create();
-    lv_indev_set_type(indev_button, LV_INDEV_TYPE_BUTTON);
-    lv_indev_set_read_cb(indev_button, button_read);
+    // /* 注册按钮输入设备 */
+    // indev_button = lv_indev_create();
+    // lv_indev_set_type(indev_button, LV_INDEV_TYPE_BUTTON);
+    // lv_indev_set_read_cb(indev_button, button_read);
 
-    /*Assign buttons to points on the screen*/
-    static const lv_point_t btn_points[2] = {
-        {10, 10},   /*Button 0 -> x:10; y:10*/
-        {40, 100},  /*Button 1 -> x:40; y:100*/
-    };
-    lv_indev_set_button_points(indev_button, btn_points);
+    // /* 为按钮分配屏幕上的点, 以此来用按钮模拟点击屏幕上对应的点 */
+    // static const lv_point_t btn_points[2] = {
+    //     {10, 10},  /*Button 0 -> x:10; y:10*/
+    //     {40, 100}, /*Button 1 -> x:40; y:100*/
+    // };
+    // lv_indev_set_button_points(indev_button, btn_points);
 }
 
 /**********************
@@ -168,45 +188,80 @@ void lv_port_indev_init(void)
  **********************/
 
 /*------------------
- * Touchpad
+ *      触摸屏
  * -----------------*/
 
-/*Initialize your touchpad*/
+/**
+ * @brief       初始化触摸屏
+ * @param       无
+ * @retval      无
+ */
 static void touchpad_init(void)
 {
     /*Your code comes here*/
+    tp_dev.init();
+
+    /* 电阻屏坐标矫正 */
+    if (key_scan(0) == KEY0_PRES) /* KEY0按下,则执行校准程序 */
+    {
+        lcd_clear(WHITE); /* 清屏 */
+        tp_adjust();      /* 屏幕校准 */
+        tp_save_adjust_data();
+    }
 }
 
-/*Will be called by the library to read the touchpad*/
-static void touchpad_read(lv_indev_t * indev_drv, lv_indev_data_t * data)
+/**
+ * @brief       图形库的触摸屏读取回调函数
+ * @param       indev_drv   : 触摸屏设备
+ *   @arg       data        : 输入设备数据结构体
+ * @retval      无
+ */
+static void touchpad_read(lv_indev_t *indev_drv, lv_indev_data_t *data)
 {
     static int32_t last_x = 0;
     static int32_t last_y = 0;
 
     /*Save the pressed coordinates and the state*/
-    if(touchpad_is_pressed()) {
+    if (touchpad_is_pressed())
+    {
         touchpad_get_xy(&last_x, &last_y);
         data->state = LV_INDEV_STATE_PR;
     }
-    else {
+    else
+    {
         data->state = LV_INDEV_STATE_REL;
     }
 
-    /*Set the last pressed coordinates*/
+    /* 设置最后按下的坐标 */
     data->point.x = last_x;
     data->point.y = last_y;
 }
 
-/*Return true is the touchpad is pressed*/
+/**
+ * @brief       获取触摸屏设备的状态
+ * @param       无
+ * @retval      返回触摸屏设备是否被按下
+ */
 static bool touchpad_is_pressed(void)
 {
     /*Your code comes here*/
+    tp_dev.scan(0);
+
+    if (tp_dev.sta & TP_PRES_DOWN)
+    {
+        return true;
+    }
 
     return false;
 }
 
-/*Get the x and y coordinates if the touchpad is pressed*/
-static void touchpad_get_xy(int32_t * x, int32_t * y)
+/**
+ * @brief       在触摸屏被按下的时候读取 x、y 坐标
+ * @param       x   : x坐标的指针
+ *   @arg       y   : y坐标的指针
+ * @retval      无
+ */
+static void touchpad_get_xy(int32_t *x, int32_t *y)
 {
     /*Your code comes here*/
 
@@ -215,189 +270,272 @@ static void touchpad_get_xy(int32_t * x, int32_t * y)
 }
 
 /*------------------
- * Mouse
+ *       鼠标
  * -----------------*/
 
-/*Initialize your mouse*/
-static void mouse_init(void)
-{
-    /*Your code comes here*/
-}
+/**
+ * @brief       初始化鼠标
+ * @param       无
+ * @retval      无
+ */
+// static void mouse_init(void)
+// {
+//     /*Your code comes here*/
+//     tp_dev.init();
+//     /* 电阻屏如果发现显示屏XY镜像现象，需要坐标矫正 */
+//     if (0 == (tp_dev.touchtype & 0x80))
+//     {
+//         tp_adjust();
+//         tp_save_adjust_data();
+//     }
+// }
 
-/*Will be called by the library to read the mouse*/
-static void mouse_read(lv_indev_t * indev_drv, lv_indev_data_t * data)
-{
-    /*Get the current x and y coordinates*/
-    mouse_get_xy(&data->point.x, &data->point.y);
+/**
+ * @brief       图形库的鼠标读取回调函数
+ * @param       indev_drv   : 鼠标设备
+ *   @arg       data        : 输入设备数据结构体
+ * @retval      无
+ */
+// static void mouse_read(lv_indev_t *indev_drv, lv_indev_data_t *data)
+// {
+//     /* 获取当前的 x、y 坐标 */
+//     mouse_get_xy(&data->point.x, &data->point.y);
 
-    /*Get whether the mouse button is pressed or released*/
-    if(mouse_is_pressed()) {
-        data->state = LV_INDEV_STATE_PR;
-    }
-    else {
-        data->state = LV_INDEV_STATE_REL;
-    }
-}
+//     /* 获取是否按下或释放鼠标按钮 */
+//     if (mouse_is_pressed())
+//     {
+//         data->state = LV_INDEV_STATE_PR;
+//     }
+//     else
+//     {
+//         data->state = LV_INDEV_STATE_REL;
+//     }
+// }
 
-/*Return true is the mouse button is pressed*/
-static bool mouse_is_pressed(void)
-{
-    /*Your code comes here*/
+/**
+ * @brief       获取鼠标设备是否被按下
+ * @param       无
+ * @retval      返回鼠标设备是否被按下
+ */
+// static bool mouse_is_pressed(void)
+//{
+//     /*Your code comes here*/
+//     tp_dev.scan(0);
+//
+//     if (tp_dev.sta & TP_PRES_DOWN)
+//     {
+//         return true;
+//     }
+//
+//     return false;
+// }
 
-    return false;
-}
-
-/*Get the x and y coordinates if the mouse is pressed*/
-static void mouse_get_xy(int32_t * x, int32_t * y)
-{
-    /*Your code comes here*/
-
-    (*x) = 0;
-    (*y) = 0;
-}
+/**
+ * @brief       当鼠标被按下时，获取鼠标的 x、y 坐标
+ * @param       x   : x坐标的指针
+ *   @arg       y   : y坐标的指针
+ * @retval      无
+ */
+// static void mouse_get_xy(int32_t *x, int32_t *y)
+// {
+//     /*Your code comes here*/
+//     (*x) = tp_dev.x[0];
+//     (*y) = tp_dev.y[0];
+// }
 
 /*------------------
- * Keypad
+ *      键盘
  * -----------------*/
 
-/*Initialize your keypad*/
-static void keypad_init(void)
-{
-    /*Your code comes here*/
-}
+/**
+ * @brief       初始化键盘
+ * @param       无
+ * @retval      无
+ */
+// static void keypad_init(void)
+// {
+//     /*Your code comes here*/
+// }
 
-/*Will be called by the library to read the mouse*/
-static void keypad_read(lv_indev_t * indev_drv, lv_indev_data_t * data)
-{
-    static uint32_t last_key = 0;
+/**
+ * @brief       图形库的键盘读取回调函数
+ * @param       indev_drv : 键盘设备
+ *   @arg       data      : 输入设备数据结构体
+ * @retval      无
+ */
+// static void keypad_read(lv_indev_t *indev_drv, lv_indev_data_t *data)
+// {
+//     static uint32_t last_key = 0;
 
-    /*Get the current x and y coordinates*/
-    mouse_get_xy(&data->point.x, &data->point.y);
+//     // /* 这段代码是 LVGL 给出的例子，这里获取坐标好像是多余的 */
+//     // /*Get the current x and y coordinates*/
+//     // mouse_get_xy(&data->point.x, &data->point.y);
 
-    /*Get whether the a key is pressed and save the pressed key*/
-    uint32_t act_key = keypad_get_key();
-    if(act_key != 0) {
-        data->state = LV_INDEV_STATE_PR;
+//     /* 获取按键是否被按下，并保存键值 */
+//     uint32_t act_key = keypad_get_key();
+//     if (act_key != 0)
+//     {
+//         data->state = LV_INDEV_STATE_PR;
 
-        /*Translate the keys to LVGL control characters according to your key definitions*/
-        switch(act_key) {
-            case 1:
-                act_key = LV_KEY_NEXT;
-                break;
-            case 2:
-                act_key = LV_KEY_PREV;
-                break;
-            case 3:
-                act_key = LV_KEY_LEFT;
-                break;
-            case 4:
-                act_key = LV_KEY_RIGHT;
-                break;
-            case 5:
-                act_key = LV_KEY_ENTER;
-                break;
-        }
+//         /* 将键值转换成 LVGL 的控制字符 */
+//         switch (act_key)
+//         {
+//         case 1:
+//             act_key = LV_KEY_NEXT;
+//             break;
+//         case 2:
+//             act_key = LV_KEY_PREV;
+//             break;
+//         case 3:
+//             act_key = LV_KEY_LEFT;
+//             break;
+//         case 4:
+//             act_key = LV_KEY_RIGHT;
+//             break;
+//         case 5:
+//             act_key = LV_KEY_ENTER;
+//             break;
+//         }
 
-        last_key = act_key;
-    }
-    else {
-        data->state = LV_INDEV_STATE_REL;
-    }
+//         last_key = act_key;
+//     }
+//     else
+//     {
+//         data->state = LV_INDEV_STATE_REL;
+//     }
 
-    data->key = last_key;
-}
+//     data->key = last_key;
+// }
 
-/*Get the currently being pressed key.  0 if no key is pressed*/
-static uint32_t keypad_get_key(void)
-{
-    /*Your code comes here*/
+/**
+ * @brief       获取当前正在按下的按键
+ * @param       无
+ * @retval      0 : 按键没有被按下
+ */
+// static uint32_t keypad_get_key(void)
+// {
+//     /*Your code comes here*/
 
-    return 0;
-}
+//     return 0;
+// }
 
 /*------------------
- * Encoder
+ *     编码器
  * -----------------*/
 
-/*Initialize your encoder*/
-static void encoder_init(void)
-{
-    /*Your code comes here*/
-}
+/**
+ * @brief       初始化编码器
+ * @param       无
+ * @retval      无
+ */
+// static void encoder_init(void)
+// {
+//     /*Your code comes here*/
+// }
 
-/*Will be called by the library to read the encoder*/
-static void encoder_read(lv_indev_t * indev_drv, lv_indev_data_t * data)
-{
+/**
+ * @brief       图形库的编码器读取回调函数
+ * @param       indev_drv : 编码器设备
+ *   @arg       data      : 输入设备数据结构体
+ * @retval      无
+ */
+// static void encoder_read(lv_indev_t *indev_drv, lv_indev_data_t *data)
+// {
 
-    data->enc_diff = encoder_diff;
-    data->state = encoder_state;
-}
+//     data->enc_diff = encoder_diff;
+//     data->state = encoder_state;
+// }
 
-/*Call this function in an interrupt to process encoder events (turn, press)*/
-static void encoder_handler(void)
-{
-    /*Your code comes here*/
+/**
+ * @brief       在中断中调用此函数以处理编码器事件(旋转、按下)
+ * @param       无
+ * @retval      无
+ */
+// static void encoder_handler(void)
+// {
+//     /*Your code comes here*/
 
-    encoder_diff += 0;
-    encoder_state = LV_INDEV_STATE_REL;
-}
+//     encoder_diff += 0;
+//     encoder_state = LV_INDEV_STATE_REL;
+// }
 
 /*------------------
- * Button
+ *      按钮
  * -----------------*/
 
-/*Initialize your buttons*/
-static void button_init(void)
-{
-    /*Your code comes here*/
-}
+/**
+ * @brief       初始化按钮
+ * @param       无
+ * @retval      无
+ */
+// static void button_init(void)
+// {
+//     /*Your code comes here*/
+// }
 
-/*Will be called by the library to read the button*/
-static void button_read(lv_indev_t * indev_drv, lv_indev_data_t * data)
-{
+/**
+ * @brief       图形库的按钮读取回调函数
+ * @param       indev_drv : 按钮设备
+ *   @arg       data      : 输入设备数据结构体
+ * @retval      无
+ */
+// static void button_read(lv_indev_t *indev_drv, lv_indev_data_t *data)
+// {
 
-    static uint8_t last_btn = 0;
+//     static uint8_t last_btn = 0;
 
-    /*Get the pressed button's ID*/
-    int8_t btn_act = button_get_pressed_id();
+//     /* 获取被按下按钮的ID */
+//     int8_t btn_act = button_get_pressed_id();
 
-    if(btn_act >= 0) {
-        data->state = LV_INDEV_STATE_PR;
-        last_btn = btn_act;
-    }
-    else {
-        data->state = LV_INDEV_STATE_REL;
-    }
+//     if (btn_act >= 0)
+//     {
+//         data->state = LV_INDEV_STATE_PR;
+//         last_btn = btn_act;
+//     }
+//     else
+//     {
+//         data->state = LV_INDEV_STATE_REL;
+//     }
 
-    /*Save the last pressed button's ID*/
-    data->btn_id = last_btn;
-}
+//     /* 保存最后被按下按钮的ID */
+//     data->btn_id = last_btn;
+// }
 
-/*Get ID  (0, 1, 2 ..) of the pressed button*/
-static int8_t button_get_pressed_id(void)
-{
-    uint8_t i;
+/**
+ * @brief       获取被按下按钮的ID
+ * @param       无
+ * @retval      被按下按钮的ID
+ */
+// static int8_t button_get_pressed_id(void)
+// {
+//     uint8_t i;
 
-    /*Check to buttons see which is being pressed (assume there are 2 buttons)*/
-    for(i = 0; i < 2; i++) {
-        /*Return the pressed button's ID*/
-        if(button_is_pressed(i)) {
-            return i;
-        }
-    }
+//     /* 检查那个按键被按下(这里给出的示例适用于两个按钮的情况) */
+//     for (i = 0; i < 2; i++)
+//     {
+//         /* 返回被按下按钮的ID */
+//         if (button_is_pressed(i))
+//         {
+//             return i;
+//         }
+//     }
 
-    /*No button pressed*/
-    return -1;
-}
+//     /* 没有按钮被按下 */
+//     return -1;
+// }
 
-/*Test if `id` button is pressed or not*/
-static bool button_is_pressed(uint8_t id)
-{
+/**
+ * @brief       检查指定ID的按钮是否被按下
+ * @param       无
+ * @retval      按钮是否被按下
+ */
+// static bool button_is_pressed(uint8_t id)
+// {
 
-    /*Your code comes here*/
+//     /*Your code comes here*/
 
-    return false;
-}
+//     return false;
+// }
 
 #else /*Enable this file at the top*/
 

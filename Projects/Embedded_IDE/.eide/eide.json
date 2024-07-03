@@ -46,6 +46,24 @@
               },
               {
                 "path": "../../Drivers/BSP/TIMER/btim.c"
+              },
+              {
+                "path": "../../Drivers/BSP/24CXX/24cxx.c"
+              },
+              {
+                "path": "../../Drivers/BSP/IIC/myiic.c"
+              },
+              {
+                "path": "../../Drivers/BSP/TOUCH/ctiic.c"
+              },
+              {
+                "path": "../../Drivers/BSP/TOUCH/ft5206.c"
+              },
+              {
+                "path": "../../Drivers/BSP/TOUCH/gt9xxx.c"
+              },
+              {
+                "path": "../../Drivers/BSP/TOUCH/touch.c"
               }
             ],
             "folders": []
@@ -1048,6 +1066,15 @@
                     "folders": []
                   }
                 ]
+              },
+              {
+                "name": "GUI_APP",
+                "files": [
+                  {
+                    "path": "../../Middlewares/LVGL/GUI_APP/demos/stress/lv_demo_stress.c"
+                  }
+                ],
+                "folders": []
               }
             ]
           }
@@ -1219,7 +1246,9 @@
           "../../Middlewares/LVGL/GUI/lvgl",
           "../../Middlewares/LVGL/GUI/lvgl/examples/porting",
           "../../Middlewares/LVGL/GUI/lvgl/src",
-          "../../Middlewares/LVGL/GUI"
+          "../../Middlewares/LVGL/GUI",
+          "../../Middlewares/LVGL/GUI_APP/demos",
+          "../../Middlewares/LVGL/GUI_APP/demos/stress"
         ],
         "libList": [],
         "defineList": [

@@ -11,7 +11,6 @@
  *********************/
 #include "lv_port_disp.h"
 #include <stdbool.h>
-#include "../../lvgl.h"
 #include "./BSP/LCD/lcd.h" /* 导入 lcd 驱动头文件 */
 
 /*********************
@@ -57,6 +56,27 @@ static void disp_flush(lv_display_t *disp, const lv_area_t *area, uint8_t *px_ma
  **********************/
 
 /**
+ * @brief       LCD加速绘制函数
+ * @param       (sx,sy),(ex,ey):填充矩形对角坐标,区域大小为:(ex - sx + 1) * (ey - sy + 1)
+ * @param       color:要填充的颜色
+ * @retval      无
+ */
+void lcd_draw_fast_rgb_color(int16_t sx, int16_t sy,int16_t ex, int16_t ey, uint8_t *color)
+{
+    uint16_t w = ex-sx+1;
+    uint16_t h = ey-sy+1;
+
+    lcd_set_window(sx, sy, w, h);
+    uint32_t draw_size = w * h;
+    lcd_write_ram_prepare();
+
+    for(uint32_t i = 0; i < draw_size; i++)
+    {
+        lcd_wr_data(color[i]);
+    }
+}
+
+/**
  * @brief 初始化并注册显示设备
  * @param 无
  * @retval 无
@@ -98,10 +118,16 @@ void lv_port_disp_init(void)
  *   STATIC FUNCTIONS
  **********************/
 
-/*Initialize your display and the required peripherals.*/
+/**
+ * @brief 初始化显示设备和必要的外围设备
+ * @param 无
+ * @retval 无
+ */
 static void disp_init(void)
 {
     /*You code here*/
+    lcd_init();         /* 初始化 LCD */
+    lcd_display_dir(1); /* 设置横屏 */
 }
 
 volatile bool disp_flush_enabled = true;
@@ -120,31 +146,46 @@ void disp_disable_update(void)
     disp_flush_enabled = false;
 }
 
-/*Flush the content of the internal buffer the specific area on the display.
+/* 将内部缓冲区的内容刷新到显示屏上的特定区域
  *`px_map` contains the rendered image as raw pixel map and it should be copied to `area` on the display.
  *You can use DMA or any hardware acceleration to do this operation in the background but
  *'lv_display_flush_ready()' has to be called when it's finished.*/
+/**
+ * @brief 将内部缓冲区的内容刷新到显示屏上的特定区域
+ * @note ' px_map '包含渲染图像作为原始像素图，它应该复制到显示器上的' area '
+ * @note 可以使用 DMA 或者任何硬件在后台加速执行这个操作
+ * 但是，需要在刷新完成后调用函数 'lv_disp_flush_ready()'
+ * @param disp_drv : 显示设备
+ * @arg area : 要刷新的区域，包含了填充矩形的对角坐标
+ * @arg px_map : 颜色数组
+ *
+ * @retval 无
+ */
 static void disp_flush(lv_display_t *disp_drv, const lv_area_t *area, uint8_t *px_map)
 {
-    if (disp_flush_enabled)
-    {
-        /*The most simple case (but also the slowest) to put all pixels to the screen one-by-one*/
+    // if (disp_flush_enabled)
+    // {
+    //     /* 最简单的情况(但也是最慢的)是将所有像素一个接一个地放到屏幕上 */
 
-        int32_t x;
-        int32_t y;
-        for (y = area->y1; y <= area->y2; y++)
-        {
-            for (x = area->x1; x <= area->x2; x++)
-            {
-                /*Put a pixel to the display. For example:*/
-                /*put_px(x, y, *px_map)*/
-                px_map++;
-            }
-        }
-    }
+    //     int32_t x;
+    //     int32_t y;
+    //     for (y = area->y1; y <= area->y2; y++)
+    //     {
+    //         for (x = area->x1; x <= area->x2; x++)
+    //         {
+    //             /*Put a pixel to the display. For example:*/
+    //             /*put_px(x, y, *px_map)*/
+    //             px_map++;
+    //         }
+    //     }
+    // }
 
-    /*IMPORTANT!!!
-     *Inform the graphics library that you are ready with the flushing*/
+    /* 在指定区域内填充指定颜色块 */
+    // lcd_color_fill(area->x1, area->y1, area->x2, area->y2, px_map);
+    lcd_draw_fast_rgb_color(area->x1, area->y1, area->x2, area->y2, px_map);
+
+    /* 重要!!!
+     * 通知图形库，已经刷新完毕了 */
     lv_display_flush_ready(disp_drv);
 }
 
