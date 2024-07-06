@@ -24,8 +24,6 @@
 
 #include "./BSP/SRAM/sram.h"
 #include "./SYSTEM/usart/usart.h"
-#include "./XMRAM/XMRAM.h"
-
 
 SRAM_HandleTypeDef g_sram_handler; /* SRAM句柄 */
 
@@ -39,7 +37,6 @@ void sram_init(void)
     GPIO_InitTypeDef gpio_init_struct;
     FSMC_NORSRAM_TimingTypeDef fsmc_readwritetim;
 
-    XmRamInit();
     SRAM_CS_GPIO_CLK_ENABLE();    /* SRAM_CS脚时钟使能 */
     SRAM_WR_GPIO_CLK_ENABLE();    /* SRAM_WR脚时钟使能 */
     SRAM_RD_GPIO_CLK_ENABLE();    /* SRAM_RD脚时钟使能 */

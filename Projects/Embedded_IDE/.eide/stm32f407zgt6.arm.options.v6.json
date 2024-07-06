@@ -6,15 +6,16 @@
         "output-debug-info": "enable"
     },
     "c/cpp-compiler": {
-        "optimization": "level-0",
+        "optimization": "level-1",
         "language-c": "c99",
         "language-cpp": "c++11",
         "one-elf-section-per-function": true,
         "short-enums#wchar": true,
-        "warnings": "all-warnings"
+        "warnings": "ac5-like-warnings"
     },
     "asm-compiler": {
-        "$use": "asm-auto"
+        "$use": "asm-auto",
+        "misc-controls": "--diag_suppress=1950"
     },
     "linker": {
         "output-format": "elf",

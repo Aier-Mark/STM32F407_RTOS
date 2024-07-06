@@ -4,6 +4,7 @@
 /Projects/Embedded_IDE/build
 /Projects/MDK-ARM/Objects
 /Projects/MDK-ARM/Listings
+/Projects/MDK-ARM/build
 
 # eide template
 *.ept

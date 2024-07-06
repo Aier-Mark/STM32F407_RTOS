@@ -46,9 +46,9 @@ void task2(void *pvParameters); /* 任务函数 */
  */
 void freeRTOS_Init(void)
 {
-    lv_init();            /* lvgl系统初始化 */
-    lv_port_disp_init();  /* lvgl显示接口初始化,放在lv_init()的后面 */
-    lv_port_indev_init(); /* lvgl输入接口初始化,放在lv_init()的后面 */
+    // lv_init();            /* lvgl系统初始化 */
+    // lv_port_disp_init();  /* lvgl显示接口初始化,放在lv_init()的后面 */
+    // lv_port_indev_init(); /* lvgl输入接口初始化,放在lv_init()的后面 */
 
     xTaskCreate((TaskFunction_t)start_task,          /* 任务函数 */
                 (const char *)"start_task",          /* 任务名称 */
@@ -96,21 +96,21 @@ void start_task(void *pvParameters)
  */
 void task1(void *pvParameters)
 {
-    // lcd_show_string(30, 50, 200, 16, 16, "STM32", RED);
-    // lcd_show_string(30, 70, 200, 16, 16, "USMART TEST", RED);
-    // lcd_show_string(30, 90, 200, 16, 16, "ATOM@ALIENTEK", RED);
-    // while (1) {
-    //     printf("freertos\r\n");
-    //     vTaskDelay(1000); /* 延时1000ticks */
-    // }
-    
-    lv_demo_stress();       /* 测试的demo */
-    
-    while(1)
-    {
-        lv_timer_handler(); /* LVGL计时器 */
-        vTaskDelay(5);
+    lcd_show_string(30, 50, 200, 16, 16, "STM32", RED);
+    lcd_show_string(30, 70, 200, 16, 16, "USMART TEST", RED);
+    lcd_show_string(30, 90, 200, 16, 16, "ATOM@ALIENTEK", RED);
+    while (1) {
+        printf("freertos\r\n");
+        vTaskDelay(1000); /* 延时1000ticks */
     }
+    
+    // lv_demo_stress();       /* 测试的demo */
+    
+    // while(1)
+    // {
+    //     lv_timer_handler(); /* LVGL计时器 */
+    //     vTaskDelay(5);
+    // }
 }
 
 /**

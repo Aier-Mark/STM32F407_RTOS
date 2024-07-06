@@ -219,15 +219,6 @@
             "folders": []
           },
           {
-            "name": "XMRAM",
-            "files": [
-              {
-                "path": "../../Middlewares/XMRAM/XMRAM.lib"
-              }
-            ],
-            "folders": []
-          },
-          {
             "name": "FreeRTOS",
             "files": [
               {
@@ -811,9 +802,6 @@
                         "path": "../../Middlewares/LVGL/GUI/lvgl/src/misc/lv_utils.c"
                       },
                       {
-                        "path": "../../Middlewares/LVGL/GUI/lvgl/src/misc/cache/_lv_cache_lru_rb.c"
-                      },
-                      {
                         "path": "../../Middlewares/LVGL/GUI/lvgl/src/misc/cache/lv_cache.c"
                       },
                       {
@@ -829,10 +817,10 @@
                     "name": "osal",
                     "files": [
                       {
-                        "path": "../../Middlewares/LVGL/GUI/lvgl/src/osal/lv_cmsis_rtos2.c"
+                        "path": "../../Middlewares/LVGL/GUI/lvgl/src/osal/lv_freertos.c"
                       },
                       {
-                        "path": "../../Middlewares/LVGL/GUI/lvgl/src/osal/lv_freertos.c"
+                        "path": "../../Middlewares/LVGL/GUI/lvgl/src/osal/lv_cmsis_rtos2.c"
                       },
                       {
                         "path": "../../Middlewares/LVGL/GUI/lvgl/src/osal/lv_os_none.c"
@@ -881,9 +869,6 @@
                       },
                       {
                         "path": "../../Middlewares/LVGL/GUI/lvgl/src/others/sysmon/lv_sysmon.c"
-                      },
-                      {
-                        "path": "../../Middlewares/LVGL/GUI/lvgl/src/others/vg_lite_tvg/vg_lite_matrix.c"
                       }
                     ],
                     "folders": []
